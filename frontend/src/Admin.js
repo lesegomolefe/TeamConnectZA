@@ -9,6 +9,7 @@ function Admin() {
   const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [group, setGroup] = useState("");
 
   const handleModal = () => {
     setShowModal(!showModal);
@@ -19,6 +20,7 @@ function Admin() {
     console.log('Form submitted!');
     setShowModal(false); // Close the modal after submitting the form
   };
+  
 
   return (
     <div>
@@ -96,6 +98,18 @@ function Admin() {
                       <label htmlFor="email" className="form-label">Email</label>
                       <input type="email" name="email" className="form-control" id="email" placeholder="" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
+                    <div className="mb-3">
+  <label htmlFor="group" className="form-label"> Please Select the Group</label>
+  <select name="group" className="form-select" id="group" value={group} onChange={(e) => setGroup(e.target.value)}>
+    <option value="option1">Java Interns 2023</option>
+    <option value="option2">The Zen Squad</option>
+    <option value="option3">C# $.Net Interns 2022</option>
+    <option value="option3">Liberty Admin Interns 2022</option>
+    <option value="option3">Cybersecuty Interns 2022</option>
+    <option value="option3">Mainframe Interns 2022</option>
+  </select>
+</div>
+
                   </div>
                   <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" onClick={handleModal}>Close</button>

@@ -10,6 +10,7 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
+    const [role, setRole] = useState('intern'); // Default role is set to 'intern'
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -60,6 +61,17 @@ const Register = () => {
                 <div className="mb-3">
                     <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
                     <input name="password" required type="password" className="form-control" placeholder="Password" id="exampleInputPassword1" value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="roleSelect" className="form-label">Role</label>
+                    <select id="roleSelect" className="form-select" value={role} onChange={(e) => setRole(e.target.value)}>
+                    <option value="option1">Java Interns 2023</option>
+    <option value="option2">The Zen Squad</option>
+    <option value="option3">C# $.Net Interns 2022</option>
+    <option value="option4">Liberty Admin Interns 2022</option>
+    <option value="option5">Cybersecuty Interns 2022</option>
+    <option value="option6">Mainframe Interns 2022</option>
+                    </select>
                 </div>
                 <button type="submit" className="btn btn-primary" onClick={() => navigate('/')}>Register</button>
             </form>
