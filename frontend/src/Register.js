@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 const Register = () => {
+    const navigate = useNavigate(); // Use the useNavigate hook to get the navigation function
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [idNo, setIdNo] = useState('');
@@ -26,6 +28,7 @@ const Register = () => {
         setPassword('');
         // Display a success message
         setMsg('Registration successful!');
+        navigate('/Login');
     };
 
     return (
@@ -58,9 +61,9 @@ const Register = () => {
                     <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
                     <input name="password" required type="password" className="form-control" placeholder="Password" id="exampleInputPassword1" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
-                <button type="submit" className="btn btn-primary">Register</button>
+                <button type="submit" className="btn btn-primary" onClick={() => navigate('/')}>Register</button>
             </form>
-            <div id="emailHelp" className="form-text">Been here? <Link to="/login">Login</Link></div>
+            <div id="emailHelp" className="form-text">Been here? <button type="button" className="btn btn-link" onClick={() => navigate('/')}>Login</button></div>
         </div>
     );
 };

@@ -31,6 +31,7 @@ function Admin() {
                 Zensar Interns Groups
               </button>
               <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+              <li><a className="dropdown-item" href="#">Add Group</a></li>
                 <li><a className="dropdown-item" href="#">Java Interns 2023</a></li>
                 <li><a className="dropdown-item" href="#">The Zen Squad</a></li>
                 <li><a className="dropdown-item" href="#">C# $.Net Interns 2022</a></li>
@@ -41,7 +42,7 @@ function Admin() {
               </ul>
             </div>
             
-            <button onClick={handleModal} className="btn btn-outline-primary me-2">Add Group</button>
+            <button onClick={handleModal} className="btn btn-outline-primary me-2">Add Intern</button>
             <button type="button" className="btn btn-outline-primary">
               <a style={{ textDecoration: 'none', color: 'blue' }} href="/logout">
                 Logout

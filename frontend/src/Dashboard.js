@@ -59,10 +59,10 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("complains");
 
   const [userProfile, setUserProfile] = useState({
-    name:  "Lesego Molefe",
-    email:  "lesego.molefe@example.com",
-    phone:  "+27123456789",
-    bio  :     "I am a passionate software developer with expertise in React and Node.js.",
+    name: "Lesego Molefe",
+    email: "lesego.molefe@example.com",
+    phone: "+27123456789",
+    bio: "I am a passionate software developer with expertise in React and Node.js.",
     skills: "php, java, html, js",
     profilePicture: "icon.jpg",
   });
@@ -79,6 +79,11 @@ const Dashboard = () => {
 
   const handleCloseProfileModal = () => {
     setShowProfileModal(false);
+  };
+  const [sendAnonymously, setSendAnonymously] = useState(false);
+
+  const toggleSendAnonymously = () => {
+    setSendAnonymously(!sendAnonymously);
   };
 
   return (
@@ -110,7 +115,7 @@ const Dashboard = () => {
               <button type="button" className="btn btn-outline-primary">
                 <a
                   style={{ textDecoration: "none", color: "blue" }}
-                  href="/logout"
+                  href="/"
                 >
                   Logout
                 </a>
@@ -262,6 +267,26 @@ const Dashboard = () => {
                       rows="3"
                     ></textarea>
                   </div>
+                </div>
+
+                <div className="container-sm">
+                  {/* Other form fields */}
+                  <div className="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="anonymousCheckbox"
+                      checked={sendAnonymously}
+                      onChange={toggleSendAnonymously}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="anonymousCheckbox"
+                    >
+                      Send Anonymously
+                    </label>
+                  </div>
+                  {/* Submit button */}
                 </div>
               </div>
               <div style={{ textAlign: "right" }} className="col-sm-12">
@@ -434,26 +459,28 @@ const Dashboard = () => {
                     className="card-img-top"
                     alt="Profile"
                   />
-                 <div className="card-body">
-  <h5 className="card-title" style={{ marginBottom: "0", fontSize: "1.2rem" }}>
-    {userProfile.name}
-  </h5>
-  <div className="card-text" style={{ textAlign: "left" }}>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Email:</strong> {userProfile.email}
-    </p>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Phone:</strong> {userProfile.phone}
-    </p>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Bio:</strong> {userProfile.bio}
-    </p>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Skills:</strong> {userProfile.skills}
-    </p>
-  </div>
-</div>
-
+                  <div className="card-body">
+                    <h5
+                      className="card-title"
+                      style={{ marginBottom: "0", fontSize: "1.2rem" }}
+                    >
+                      {userProfile.name}
+                    </h5>
+                    <div className="card-text" style={{ textAlign: "left" }}>
+                      <p style={{ margin: "5px 0", fontSize: "1rem" }}>
+                        <strong>Email:</strong> {userProfile.email}
+                      </p>
+                      <p style={{ margin: "5px 0", fontSize: "1rem" }}>
+                        <strong>Phone:</strong> {userProfile.phone}
+                      </p>
+                      <p style={{ margin: "5px 0", fontSize: "1rem" }}>
+                        <strong>Bio:</strong> {userProfile.bio}
+                      </p>
+                      <p style={{ margin: "5px 0", fontSize: "1rem" }}>
+                        <strong>Skills:</strong> {userProfile.skills}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
