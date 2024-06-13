@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
+import { Button, Modal, Form } from 'react-bootstrap';
 
 function Admin() {
   const [showModal, setShowModal] = useState(false);
@@ -9,7 +9,10 @@ function Admin() {
   const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [group, setGroup] = useState("");
+  const [group, setGroup] = useState('');
+
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
 
   const handleModal = () => {
     setShowModal(!showModal);
@@ -20,7 +23,6 @@ function Admin() {
     console.log('Form submitted!');
     setShowModal(false); // Close the modal after submitting the form
   };
-  
 
   return (
     <div>
@@ -29,21 +31,21 @@ function Admin() {
           <h1>TeamConnect</h1>
           <div>
             <div className="dropdown d-inline-block me-2">
-              <button className="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">  
+              <button className="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 Zensar Interns Groups
               </button>
               <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
-              <li><a className="dropdown-item" href="#">Add Group</a></li>
+                <li><button className="dropdown-item" onClick={handleShow}>Add Group</button></li>
                 <li><a className="dropdown-item" href="#">Java Interns 2023</a></li>
                 <li><a className="dropdown-item" href="#">The Zen Squad</a></li>
                 <li><a className="dropdown-item" href="#">C# $.Net Interns 2022</a></li>
                 <li><a className="dropdown-item" href="#">Liberty Admin Interns 2022</a></li>
-                <li><a className="dropdown-item" href="#">Mobile App Develeopment 2022</a></li>
-                <li><a className="dropdown-item" href="#">Cybersecuty Interns 2022</a></li>
+                <li><a className="dropdown-item" href="#">Mobile App Development 2022</a></li>
+                <li><a className="dropdown-item" href="#">Cybersecurity Interns 2022</a></li>
                 <li><a className="dropdown-item" href="#">Mainframe Interns 2022</a></li>
               </ul>
             </div>
-            
+
             <button onClick={handleModal} className="btn btn-outline-primary me-2">Add Intern</button>
             <button type="button" className="btn btn-outline-primary">
               <a style={{ textDecoration: 'none', color: 'blue' }} href="/logout">
@@ -67,59 +69,31 @@ function Admin() {
           <div className="progress-bar" role="progressbar" aria-label="Example 1px high" style={{ width: '100%' }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
 
-        {/* Modal */}
-        {showModal &&
-          <div className="modal fade show" style={{ display: 'block', marginRight: '15%' }} tabIndex="-1" role="dialog">
-            <form onSubmit={handleSubmit}>
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Add new member</h5>
-                    <button type="button" className="btn-close" onClick={handleModal} aria-label="Close"></button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="alert alert-warning alert-dismissible fade show" role="alert">
-                      {message ? message : 'Input new member information'}
-                      <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="id" className="form-label">ID number</label>
-                      <input required type="number" name="id" className="form-control" id="id" placeholder="" value={id} onChange={(e) => setId(e.target.value)} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="firstname" className="form-label">Firstname</label>
-                      <input required type="text" name="firstname" className="form-control" id="firstname" placeholder="" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="lastname" className="form-label">Lastname</label>
-                      <input required type="text" name="lastname" className="form-control" id="lastname" placeholder="" value={lastname} onChange={(e) => setLastname(e.target.value)} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="email" className="form-label">Email</label>
-                      <input type="email" name="email" className="form-control" id="email" placeholder="" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    </div>
-                    <div className="mb-3">
-  <label htmlFor="group" className="form-label"> Please Select the Group</label>
-  <select name="group" className="form-select" id="group" value={group} onChange={(e) => setGroup(e.target.value)}>
-    <option value="option1">Java Interns 2023</option>
-    <option value="option2">The Zen Squad</option>
-    <option value="option3">C# $.Net Interns 2022</option>
-    <option value="option3">Liberty Admin Interns 2022</option>
-    <option value="option3">Cybersecuty Interns 2022</option>
-    <option value="option3">Mainframe Interns 2022</option>
-  </select>
-</div>
+        {/* Modal for adding a group */}
+        <Modal show={showModal} onHide={handleClose}>
+  <Form onSubmit={handleSubmit}>
+    <Modal.Header closeButton>
+      <Modal.Title>Add Group</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+    <Form.Group className="mb-3" controlId="formGroupName">
+  <Form.Label>Group Name</Form.Label>
+  <Form.Control type="text" placeholder="Enter group name" value={group} onChange={(e) => setGroup(e.target.value)} />
+</Form.Group>
 
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={handleModal}>Close</button>
-                    <button type="submit" className="btn btn-primary">Add</button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        }
+      <Form.Group controlId="formGroupPicture">
+        <Form.Label>Group Picture</Form.Label>
+        <Form.Control type="file" />
+      </Form.Group>
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="secondary" onClick={handleClose}>Close</Button>
+      <Button variant="primary" type="submit">Add Group</Button>
+    </Modal.Footer>
+  </Form>
+</Modal>
+
+
 
         <h1>Complains</h1>
         <br />

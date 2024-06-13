@@ -35,7 +35,7 @@ const Register = () => {
     return (
         <div className="login" style={{ backgroundColor: 'rgb(245, 246, 250)', marginLeft: '15%', marginRight: '15%', marginTop: '10%', width: '70%', border: '1px solid rgb(38, 0, 70)', borderRadius: '15px', padding: '15px', textAlign: 'center' }}>
             <h1>TeamConnect</h1>
-            <p>Hi newbie, Please register.</p>
+            <p>Hi newbie 😊, Please register.</p>
          
             <p style={{ margin: 'auto', width: '50%', textAlign: 'center', backgroundColor: '#0d6efd', color: 'white', borderRadius: '25px' }}>{msg}</p>
             <div className="progress" style={{ height: '1px' }}>
@@ -63,14 +63,14 @@ const Register = () => {
                     <input name="password" required type="password" className="form-control" placeholder="Password" id="exampleInputPassword1" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="roleSelect" className="form-label">Role</label>
+                    <label htmlFor="roleSelect" className="form-label"> Please Select the Group</label>
                     <select id="roleSelect" className="form-select" value={role} onChange={(e) => setRole(e.target.value)}>
                     <option value="option1">Java Interns 2023</option>
-    <option value="option2">The Zen Squad</option>
-    <option value="option3">C# $.Net Interns 2022</option>
-    <option value="option4">Liberty Admin Interns 2022</option>
-    <option value="option5">Cybersecuty Interns 2022</option>
-    <option value="option6">Mainframe Interns 2022</option>
+                    <option value="option2">The Zen Squad</option>
+                    <option value="option3">C# $.Net Interns 2022</option>
+                    <option value="option4">Liberty Admin Interns 2022</option>
+                    <option value="option5">Cybersecuty Interns 2022</option>
+                    <option value="option6">Mainframe Interns 2022</option>
                     </select>
                 </div>
                 <button type="submit" className="btn btn-primary" onClick={() => navigate('/')}>Register</button>
