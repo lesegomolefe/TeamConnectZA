@@ -15,6 +15,11 @@ const Register = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Here you can implement the actual registration logic, such as sending a request to the server
+        if (!firstName || !lastName || !idNo || !email || !password) {
+            // If any required field is empty, set an error message and return
+            setMsg('Please fill in all the required fields.');
+            return;
+        }
         // For now, let's just log the form data
         console.log('First Name:', firstName);
         console.log('Last Name:', lastName);
@@ -29,7 +34,7 @@ const Register = () => {
         setPassword('');
         // Display a success message
         setMsg('Registration successful!');
-        navigate('/Login');
+        navigate('/');
     };
 
     return (
@@ -73,7 +78,7 @@ const Register = () => {
                     <option value="option6">Mainframe Interns 2022</option>
                     </select>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={() => navigate('/')}>Register</button>
+                <button type="button" className="btn btn-primary" onClick={handleSubmit}>Register</button>
             </form>
             <div id="emailHelp" className="form-text">Been here? <button type="button" className="btn btn-link" onClick={() => navigate('/')}>Login</button></div>
         </div>
