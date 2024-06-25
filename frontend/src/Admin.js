@@ -10,6 +10,7 @@ function Admin() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [group, setGroup] = useState('');
+  const [groupPicture, setGroupPicture] = useState(null);
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
@@ -17,11 +18,15 @@ function Admin() {
   const handleModal = () => {
     setShowModal(!showModal);
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted!');
-    setShowModal(false); // Close the modal after submitting the form
+    setShowModal(true); // Close the modal after submitting the form
+
+  
+  
   };
 
   return (
@@ -48,7 +53,7 @@ function Admin() {
 
             <button onClick={handleModal} className="btn btn-outline-primary me-2">Add Intern</button>
             <button type="button" className="btn btn-outline-primary">
-              <a style={{ textDecoration: 'none', color: 'blue' }} href="/logout">
+              <a style={{ textDecoration: 'none', color: 'blue' }} href="/">
                 Logout
               </a>
             </button>

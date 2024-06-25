@@ -21,7 +21,7 @@ const Login = () => {
         // Display a success message
         setMsg('Login successful!');
         // Navigate to the appropriate dashboard based on the selected role
-        navigate(role === 'intern' ? '/intern_dashboard' : '/manager_dashboard');
+        navigate(role === 'intern' ? '/dashboard' : '/admin');
     };
 
     return (
