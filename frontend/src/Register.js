@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import AuthService from './AuthService';
 
 const Register = () => {
     const navigate = useNavigate(); // Use the useNavigate hook to get the navigation function
@@ -12,30 +13,46 @@ const Register = () => {
     const [msg, setMsg] = useState('');
     const [role, setRole] = useState('intern'); // Default role is set to 'intern'
 
-    const handleSubmit = (e) => {
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     // Here you can implement the actual registration logic, such as sending a request to the server
+    //     if (!firstName || !lastName || !idNo || !email || !password) {
+    //         // If any required field is empty, set an error message and return
+    //         setMsg('Please fill in all the required fields.');
+    //         return;
+    //     }
+    //     // For now, let's just log the form data
+    //     console.log('First Name:', firstName);
+    //     console.log('Last Name:', lastName);
+    //     console.log('ID Number:', idNo);
+    //     console.log('Email:', email);
+    //     console.log('Password:', password);
+    //     // Reset form fields
+    //     setFirstName('');
+    //     setLastName('');
+    //     setIdNo('');
+    //     setEmail('');
+    //     setPassword('');
+    //     // Display a success message
+    //     setMsg('Registration successful!');
+    //     navigate('/');
+    // };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here you can implement the actual registration logic, such as sending a request to the server
-        if (!firstName || !lastName || !idNo || !email || !password) {
-            // If any required field is empty, set an error message and return
-            setMsg('Please fill in all the required fields.');
-            return;
+        try {
+            const response = await AuthService.register({ firstName, lastName,idNo, email, password });
+            setMsg(response.data);
+            if (response.data === 'User registered successfully') {
+                navigate('/');
+            }
+        } catch (error) {
+            setMsg('Registration failed');
         }
-        // For now, let's just log the form data
-        console.log('First Name:', firstName);
-        console.log('Last Name:', lastName);
-        console.log('ID Number:', idNo);
-        console.log('Email:', email);
-        console.log('Password:', password);
-        // Reset form fields
-        setFirstName('');
-        setLastName('');
-        setIdNo('');
-        setEmail('');
-        setPassword('');
-        // Display a success message
-        setMsg('Registration successful!');
-        navigate('/');
     };
+
+
+
 
     return (
         <div className="login" style={{ backgroundColor: 'rgb(245, 246, 250)', marginLeft: '15%', marginRight: '15%', marginTop: '10%', width: '70%', border: '1px solid rgb(38, 0, 70)', borderRadius: '15px', padding: '15px', textAlign: 'center' }}>

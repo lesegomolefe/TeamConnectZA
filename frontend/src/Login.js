@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import AuthService from './AuthService';
 
 const Login = () => {
     const navigate = useNavigate(); // Use the useNavigate hook to get the navigation function
@@ -8,20 +9,37 @@ const Login = () => {
     const [role, setRole] = useState('intern'); // Default role is set to 'intern'
     const [msg, setMsg] = useState('');
 
-    const handleSubmit = (e) => {
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     // Here you can implement the actual login logic, such as sending a request to the server
+    //     // For now, let's just log the email, password, and role
+    //     console.log('Email:', email);
+    //     console.log('Password:', pass
+   
+    //     console.log('Role:', role);
+    //     // Reset form fields
+    //     setEmail('');
+    //     setPassword('');
+    //     // Display a success message
+    //     setMsg('Login successful!');
+    //     // Navigate to the appropriate dashboard based on the selected role
+    //     navigate(role === 'intern' ? '/dashboard' : '/admin');
+    // };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here you can implement the actual login logic, such as sending a request to the server
-        // For now, let's just log the email, password, and role
-        console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('Role:', role);
-        // Reset form fields
-        setEmail('');
-        setPassword('');
-        // Display a success message
-        setMsg('Login successful!');
-        // Navigate to the appropriate dashboard based on the selected role
-        navigate(role === 'intern' ? '/dashboard' : '/admin');
+        try {
+            const response = await AuthService.login({ email, password });
+            if (response.data === 'Login successful') {
+                navigate(role === 'intern' ? '/dashboard' : '/admin');
+            } else {
+                setMsg('Invalid credentials');
+            }
+        } catch (error) {
+            setMsg('Invalid credentials');
+        }
+    
+
     };
 
     return (
