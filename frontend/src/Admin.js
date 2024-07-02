@@ -1,46 +1,38 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Modal, Form } from "react-bootstrap";
 
 function Admin() {
-  const [showModal, setShowModal] = useState(false);
-  const [id, setId] = useState("");
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
   const [group, setGroup] = useState("");
-  const [groupPicture, setGroupPicture] = useState(null);
-  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState("");
+  const [noticeMessage, setNoticeMessage] = useState("");
+  const [complaints, setComplaints] = useState([]); // Example complaints array
+  const [showGroupForm, setShowGroupForm] = useState(false); // State to toggle the display of the group form
+  const [showInternForm, setShowInternForm] = useState(false);
+  const [internFullName, setInternFullName] = useState('');
+  const [internEmail, setInternEmail] = useState('');
+  const [internEmployeeNumber, setInternEmployeeNumber] = useState('');
 
-  const handleClose = () => setShowModal(false);
-  const handleShow = () => setShowModal(true);
-
-  const handleModal = () => {
-    setShowModal(!showModal);
-  };
-  // Function to handle file input change
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setGroupPicture(file);
-  };
-
-  const handleSubmit = (e) => {
+  const handleGroupSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted!");
-    setShowModal(true); // Close the modal after submitting the form
+    console.log("Group form submitted!");
+    // Add logic to handle group form submission
+    setShowGroupForm(false); // Hide the form after submitting
   };
-  // Function to handle form submission
-  const submitForm = (e) => {
+
+  const handleInternSubmit = (e) => {
     e.preventDefault();
-    // Here you can handle form submission logic, e.g., sending data to backend
-    console.log("Group Name:", group);
-    console.log("File:", file);
-    handleClose();
-     // Reset the form and close the modal
-     setGroup('');
-     setGroupPicture(null);
-     handleClose();
+    console.log('Intern form submitted!', { internFullName, internEmail, internEmployeeNumber });
+    setShowInternForm(false);
+    // Reset form fields
+    setInternFullName('');
+    setInternEmail('');
+    setInternEmployeeNumber('');
+  };
+
+  const handleNoticeSubmit = (e) => {
+    e.preventDefault();
+    console.log("Notice form submitted!");
+    // Add logic to handle notice form submission
   };
 
   return (
@@ -67,7 +59,10 @@ function Admin() {
                 aria-labelledby="dropdownMenuButton"
               >
                 <li>
-                  <button className="dropdown-item" onClick={handleShow}>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => setShowGroupForm(true)}
+                  >
                     Add Group
                   </button>
                 </li>
@@ -109,14 +104,12 @@ function Admin() {
               </ul>
             </div>
 
-            <button
-              onClick={handleModal}
-              className="btn btn-outline-primary me-2"
-            >
-              Add Intern
-            </button>
+            <button className="btn btn-outline-primary me-2" onClick={() => setShowInternForm(true)}>Add Intern</button>
             <button type="button" className="btn btn-outline-primary">
-              <a style={{ textDecoration: "none", color: "blue" }} href="/">
+              <a
+                style={{ textDecoration: "none", color: "blue" }}
+                href="/logout"
+              >
                 Logout
               </a>
             </button>
@@ -155,44 +148,118 @@ function Admin() {
           ></div>
         </div>
 
-        {/* Modal for adding a group */}
-        <Modal show={showModal} onHide={handleClose}>
-          <Form onSubmit={submitForm}>
-            <Modal.Header closeButton>
-              <Modal.Title>Add Group +</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form.Group className="mb-3" controlId="formGroupName">
-                <Form.Label>Group Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter group name"
-                  value={group}
-                  onChange={(e) => setGroup(e.target.value)}
-                  required
-                />
-              </Form.Group>
-
-              <Form.Group controlId="formGroupPicture">
-                <Form.Label>Group Picture</Form.Label>
-                <Form.Control
-                  type="file"
-                  onChange={handleFileChange}
-                  accept="image/*" // Optional: Restrict to image files
-                  required
-                />
-              </Form.Group>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
+        {/* Form for adding a group */}
+        {showGroupForm && (
+          <form
+            onSubmit={handleGroupSubmit}
+            style={{
+              marginTop: "20px",
+              border: "1px solid blue",
+              padding: "20px",
+              borderRadius: "10px",
+            }}
+          >
+            <div className="mb-3">
+              <label htmlFor="groupName" className="form-label">
+                Group Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="groupName"
+                placeholder="Enter group name"
+                value={group}
+                onChange={(e) => setGroup(e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="groupPicture" className="form-label">
+                Group Picture
+              </label>
+              <input type="file" className="form-control" id="groupPicture" />
+            </div>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button
+                type="button"
+                className="btn btn-secondary me-2"
+                onClick={() => setShowGroupForm(false)}
+              >
                 Close
-              </Button>
-              <Button variant="primary" type="submit">
+              </button>
+              <button type="submit" className="btn btn-primary">
                 Add Group
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal>
+              </button>
+            </div>
+          </form>
+        )}
+
+        {showInternForm && (
+          <form
+            onSubmit={handleInternSubmit}
+            style={{
+              marginTop: "20px",
+              border: "1px solid blue",
+              padding: "20px",
+              borderRadius: "10px",
+            }}
+          >
+          
+            <div className="mb-3">
+              <label htmlFor="internFullName" className="form-label">
+                Full Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="internFullName"
+                placeholder="Enter full name"
+                value={internFullName}
+                onChange={(e) => setInternFullName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="internEmail" className="form-label">
+                Email
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="internEmail"
+                placeholder="Enter email"
+                value={internEmail}
+                onChange={(e) => setInternEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="internEmployeeNumber" className="form-label">
+                Employee Number
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="internEmployeeNumber"
+                placeholder="Enter employee number"
+                value={internEmployeeNumber}
+                onChange={(e) => setInternEmployeeNumber(e.target.value)}
+                required
+              />
+            </div>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button
+                type="button"
+                className="btn btn-secondary me-2"
+                onClick={() => setShowInternForm(false)}
+              >
+                Close
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Add Intern
+              </button>
+            </div>
+          </form>
+        )}
 
         <h1>Complains</h1>
         <br />
@@ -261,7 +328,7 @@ function Admin() {
                   >
                     Complains{" "}
                     <span className="badge text-bg-warning">
-                      {/* Length of complains array */}
+                      {complaints.length}
                     </span>
                   </button>
                   <button
@@ -288,7 +355,7 @@ function Admin() {
                   tabIndex="0"
                 >
                   <br />
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleNoticeSubmit}>
                     <div className="mb-3">
                       <label htmlFor="postedBy" className="form-label">
                         Posted by
@@ -302,14 +369,16 @@ function Admin() {
                       />
                     </div>
                     <div className="mb-3">
-                      <label htmlFor="message" className="form-label">
+                      <label htmlFor="noticeMessage" className="form-label">
                         Notice message
                       </label>
                       <textarea
-                        name="message"
+                        name="noticeMessage"
                         className="form-control"
-                        id="message"
+                        id="noticeMessage"
                         rows="3"
+                        value={noticeMessage}
+                        onChange={(e) => setNoticeMessage(e.target.value)}
                       ></textarea>
                     </div>
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -355,8 +424,19 @@ function Admin() {
                   tabIndex="0"
                 >
                   <br />
-                  {/* Loop through complains array */}
-                  {/* Display complains here */}
+                  {complaints.length > 0 ? (
+                    complaints.map((complaint, index) => (
+                      <div
+                        key={index}
+                        className="alert alert-warning"
+                        role="alert"
+                      >
+                        {complaint}
+                      </div>
+                    ))
+                  ) : (
+                    <p>No complaints to display.</p>
+                  )}
                 </div>
                 <div
                   className="tab-pane fade"
