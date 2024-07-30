@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
+import axios from 'axios';
 
 function Admin() {
   const [showModal, setShowModal] = useState(false);
@@ -9,6 +10,31 @@ function Admin() {
   const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [complaintsCount, setComplaintsCount] = useState(0);
+  const [complaintsMessages, setComplaintsMessages] = useState([]);
+
+  useEffect(() => {
+    const fetchComplaintsCount = async () => {
+      try {
+        const response = await axios.get('/api/complaints/count'); // Endpoint for count
+        setComplaintsCount(response.data.count);
+      } catch (error) {
+        console.error('Failed to fetch complaints count', error);
+      }
+    };
+
+    const fetchComplaintsMessages = async () => {
+      try {
+        const response = await axios.get('/api/complaints/messages'); // Endpoint for messages
+        setComplaintsMessages(response.data);
+      } catch (error) {
+        console.error('Failed to fetch complaints messages', error);
+      }
+    };
+
+    fetchComplaintsCount();
+    fetchComplaintsMessages();
+  }, []);
 
   const handleModal = () => {
     setShowModal(!showModal);
@@ -30,20 +56,14 @@ function Admin() {
               <button className="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">  
                 Zensar Interns Groups
               </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
-                <li><a className="dropdown-item" href="#">Java Interns 2023</a></li>
-                <li><a className="dropdown-item" href="#">The Zen Squad</a></li>
-                <li><a className="dropdown-item" href="#">C# $.Net Interns 2022</a></li>
-                <li><a className="dropdown-item" href="#">Liberty Admin Interns 2022</a></li>
-                <li><a className="dropdown-item" href="#">Mobile App Develeopment 2022</a></li>
-                <li><a className="dropdown-item" href="#">Cybersecuty Interns 2022</a></li>
-                <li><a className="dropdown-item" href="#">Mainframe Interns 2022</a></li>
+              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {/* Your dropdown items here */}
               </ul>
             </div>
             
             <button onClick={handleModal} className="btn btn-outline-primary me-2">Add Group</button>
             <button type="button" className="btn btn-outline-primary">
-              <a style={{ textDecoration: 'none', color: 'blue' }} href="/logout">
+              <a style={{ textDecoration: 'none', color: 'blue' }} href="/">
                 Logout
               </a>
             </button>
@@ -106,7 +126,7 @@ function Admin() {
           </div>
         }
 
-        <h1>Complains</h1>
+        <h1>Complaints</h1>
         <br />
         <div style={{ border: '1px solid blue', padding: '1%', borderRadius: '15px' }}>
           <div style={{ borderRadius: '8px' }} className="alert alert-primary alert-dismissible fade show" role="alert">
@@ -126,7 +146,7 @@ function Admin() {
                     Notice
                   </button>
                   <button className="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="true">
-                    Complains <span className="badge text-bg-warning">{/* Length of complains array */}</span>
+                    Complaints <span className="badge text-bg-warning">{complaintsCount}</span>
                   </button>
                   <button className="nav-link" id="nav-private-tab" data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">
                     Private
@@ -161,8 +181,11 @@ function Admin() {
                 </div>
                 <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabIndex="0">
                   <br />
-                  {/* Loop through complains array */}
-                  {/* Display complains here */}
+                  <ul>
+                    {complaintsMessages.map((msg, index) => (
+                      <li key={index}>{msg.message}</li> // Adjust according to your message structure
+                    ))}
+                  </ul>
                 </div>
                 <div className="tab-pane fade" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab" tabIndex="0">
                   <br />

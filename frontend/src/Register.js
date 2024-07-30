@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { register } from './api';
 
 const Register = () => {
     const [firstName, setFirstName] = useState('');
@@ -9,24 +10,19 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here you can implement the actual registration logic, such as sending a request to the server
-        // For now, let's just log the form data
-        console.log('First Name:', firstName);
-        console.log('Last Name:', lastName);
-        console.log('ID Number:', idNo);
-        console.log('Email:', email);
-        console.log('Password:', password);
-        // Reset form fields
-        setFirstName('');
-        setLastName('');
-        setIdNo('');
-        setEmail('');
-        setPassword('');
-        // Display a success message
-        setMsg('Registration successful!');
-    };
+        try {
+          const response = await register({ firstName, lastName, idNo, email, password });
+          console.log(response.data);
+          setMsg('Registration successful!');
+          
+          
+        } catch (error) {
+          console.error('Registration error:', error);
+          setMsg('Registration failed. Please try again.');
+        }
+      };
 
     return (
         <div className="login" style={{ backgroundColor: 'rgb(245, 246, 250)', marginLeft: '15%', marginRight: '15%', marginTop: '10%', width: '70%', border: '1px solid rgb(38, 0, 70)', borderRadius: '15px', padding: '15px', textAlign: 'center' }}>
@@ -60,7 +56,7 @@ const Register = () => {
                 </div>
                 <button type="submit" className="btn btn-primary">Register</button>
             </form>
-            <div id="emailHelp" className="form-text">Been here? <Link to="/login">Login</Link></div>
+            <div id="emailHelp" className="form-text">Been here? <Link to="/">Login</Link></div>
         </div>
     );
 };

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bulma/css/bulma.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import axios from "axios";
 
 const Dashboard = () => {
   const [notice, setNotice] = useState({
@@ -15,63 +16,28 @@ const Dashboard = () => {
   });
 
   const [msg, setMsg] = useState("");
-  const [employees, setEmployees] = useState([
-    { id: 1, name: "Prince", surname: "Wits" },
-    { id: 2, name: "Letago", surname: "Tut" },
-  ]);
-
-  const [userComp, setUserComp] = useState([
-    {
-      comp_id: 1,
-      comp_about: "1 Prince Wits",
-      comp_message: "Message 1",
-      date: new Date(),
-      seen: 1,
-    },
-    {
-      comp_id: 2,
-      comp_about: "2 Letago TuT",
-      comp_message: "Message 2",
-      date: new Date(),
-      seen: 0,
-    },
-  ]);
-
-  const [compAboutUser, setCompAboutUser] = useState([
-    {
-      comp_from: "Prince TuT",
-      comp_message: "Message about you 1",
-      date: new Date(),
-    },
-  ]);
-
+  const [employees, setEmployees] = useState([]);
+  const [userComp, setUserComp] = useState([]);
+  const [compAboutUser, setCompAboutUser] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [activeTab, setActiveTab] = useState("complains");
+  const [userProfile, setUserProfile] = useState({
+    name: "Lesego Molefe",
+    email: "lesego.molefe@example.com",
+    phone: "+27123456789",
+    bio: "I am a passionate software developer with expertise in React and Node.js.",
+    skills: "php, java, html, js",
+    profilePicture: "icon.jpg",
+  });
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
 
-  const handleFileUpload = (e) => {
-    e.preventDefault();
-    console.log("Selected file:", selectedFile);
-  };
-
-  const [activeTab, setActiveTab] = useState("complains");
-
-  const [userProfile, setUserProfile] = useState({
-    name:  "Lesego Molefe",
-    email:  "lesego.molefe@example.com",
-    phone:  "+27123456789",
-    bio  :     "I am a passionate software developer with expertise in React and Node.js.",
-    skills: "php, java, html, js",
-    profilePicture: "icon.jpg",
-  });
-
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
-
-  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const handleProfileClick = () => {
     setShowProfileModal(true);
@@ -79,6 +45,64 @@ const Dashboard = () => {
 
   const handleCloseProfileModal = () => {
     setShowProfileModal(false);
+  };
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/users");
+        setEmployees(response.data);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      }
+    };
+
+    const fetchComplaints = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/complaints");
+        setUserComp(response.data);
+      } catch (error) {
+        console.error("Error fetching complaints:", error);
+      }
+    };
+
+    fetchEmployees();
+    fetchComplaints();
+  }, []);
+
+  const handleFileUpload = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  const handleSubmitComplaint = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const complaint = {
+      comp_about: formData.get("comp_about"),
+      comp_message: formData.get("comp_message"),
+      date: formData.get("date"),
+      seen: 0,
+    };
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/complaints", complaint);
+      setUserComp([...userComp, response.data]);
+    } catch (error) {
+      console.error("Error submitting complaint:", error);
+    }
   };
 
   return (
@@ -91,10 +115,7 @@ const Dashboard = () => {
           <h1>TeamConnect</h1>
           <div>
             <form onSubmit={handleFileUpload} encType="multipart/form-data">
-              <label
-                htmlFor="cv-upload"
-                className="btn btn-outline-primary mx-2"
-              >
+              <label htmlFor="cv-upload" className="btn btn-outline-primary mx-2">
                 Upload CV
               </label>
               <input
@@ -108,10 +129,7 @@ const Dashboard = () => {
                 Submit
               </button>
               <button type="button" className="btn btn-outline-primary">
-                <a
-                  style={{ textDecoration: "none", color: "blue" }}
-                  href="/logout"
-                >
+                <a style={{ textDecoration: "none", color: "blue" }} href="/">
                   Logout
                 </a>
               </button>
@@ -203,7 +221,7 @@ const Dashboard = () => {
           ></div>
         </div>
 
-        <h1>Write a new complain</h1>
+        <h1>Write a new Message</h1>
         <br />
         <div
           style={{
@@ -212,17 +230,15 @@ const Dashboard = () => {
             borderRadius: "15px",
           }}
         >
-          <form action="add_complain" method="post">
+          <form onSubmit={handleSubmitComplaint}>
             <div className="container-sm">
-              <select
+              {/* <select
                 required
                 name="comp_about"
                 className="form-select"
                 aria-label="Default select example"
               >
-                <option selected>
-                  Please choose a member to complain about
-                </option>
+                <option value="">Please choose a member to complain about</option>
                 {employees.map((emp) => (
                   <option
                     key={emp.id}
@@ -231,7 +247,7 @@ const Dashboard = () => {
                     {emp.name} {emp.surname}
                   </option>
                 ))}
-              </select>
+              </select> */}
               <br />
 
               <div className="form-floating mb-3">
@@ -243,226 +259,51 @@ const Dashboard = () => {
                   id="floatingInput"
                   placeholder="when did it happen?"
                 />
-                <label htmlFor="floatingInput">Incident date</label>
+                <label htmlFor="floatingInput">Date</label>
               </div>
-              <div className="row g-2">
-                <div className="col-sm-12">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="exampleFormControlTextarea1"
-                      className="form-label"
-                    >
-                      What happened?
-                    </label>
-                    <textarea
-                      required
-                      name="comp_message"
-                      className="form-control"
-                      id="exampleFormControlTextarea1"
-                      rows="3"
-                    ></textarea>
-                  </div>
-                </div>
+              <br />
+              <div className="form-floating">
+                <textarea
+                  required
+                  name="comp_message"
+                  className="form-control"
+                  placeholder="Leave a comment here"
+                  id="floatingTextarea"
+                  style={{ height: "150px" }}
+                ></textarea>
+                <label htmlFor="floatingTextarea">Message</label>
               </div>
-              <div style={{ textAlign: "right" }} className="col-sm-12">
-                <button type="submit" className="btn btn-outline-primary">
-                  Post
-                </button>
-              </div>
+              <br />
+              <button type="submit" className="btn btn-outline-primary">
+                Send
+              </button>
             </div>
           </form>
         </div>
-        <br />
-        <div className="row g-0 text-center">
-          <nav>
-            <div className="nav nav-tabs" id="nav-tab" role="tablist">
-              <button
-                className={`nav-link ${
-                  activeTab === "complains" ? "active" : ""
-                }`}
-                id="nav-home-tab"
-                onClick={() => handleTabChange("complains")}
-                type="button"
-                role="tab"
-                aria-controls="nav-home"
-                aria-selected={activeTab === "complains"}
-              >
-                Complains
-              </button>
-              <button
-                className={`nav-link ${
-                  activeTab === "about-you" ? "active" : ""
-                }`}
-                id="nav-profile-tab"
-                onClick={() => handleTabChange("about-you")}
-                type="button"
-                role="tab"
-                aria-controls="nav-profile"
-                aria-selected={activeTab === "about-you"}
-              >
-                About you
-              </button>
-            </div>
-          </nav>
-          <div className="tab-content" id="nav-tabContent">
-            {activeTab === "complains" && (
-              <div
-                className="tab-pane fade show active"
-                id="nav-home"
-                role="tabpanel"
-                aria-labelledby="nav-home-tab"
-              >
-                <div className="container-fluid">
-                  {userComp.length === 0 ? (
-                    <h3>No complaints posted</h3>
-                  ) : (
-                    userComp.map((comp) => (
-                      <div
-                        key={comp.comp_id}
-                        className={`alert ${
-                          comp.seen === 1 ? "alert-success" : "alert-warning"
-                        } alert-dismissible fade show`}
-                        role="alert"
-                      >
-                        <strong>{comp.comp_about}</strong> {comp.comp_message}
-                        <hr />
-                        <p
-                          style={{
-                            textAlign: "right",
-                            fontSize: "12px",
-                            backgroundColor: "#0d6efd",
-                            borderRadius: "7px",
-                            padding: "7px",
-                            fontWeight: "700",
-                            color: "white",
-                          }}
-                        >
-                          {new Date(comp.date).toLocaleDateString("en-US", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </p>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          data-bs-dismiss="alert"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-            {activeTab === "about-you" && (
-              <div
-                className="tab-pane fade show active"
-                id="nav-profile"
-                role="tabpanel"
-                aria-labelledby="nav-profile-tab"
-              >
-                <div className="container-fluid">
-                  {compAboutUser.length === 0 ? (
-                    <h3>No complaints about you</h3>
-                  ) : (
-                    compAboutUser.map((comp, index) => (
-                      <div
-                        key={index}
-                        className="alert alert-warning alert-dismissible fade show"
-                        role="alert"
-                      >
-                        <strong>{comp.comp_from}</strong> {comp.comp_message}
-                        <hr />
-                        <p
-                          style={{
-                            textAlign: "right",
-                            fontSize: "12px",
-                            backgroundColor: "#0d6efd",
-                            borderRadius: "7px",
-                            padding: "7px",
-                            fontWeight: "700",
-                            color: "white",
-                          }}
-                        >
-                          {new Date(comp.date).toLocaleDateString("en-US", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </p>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          data-bs-dismiss="alert"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
+
       {showProfileModal && (
-        <div className="modal show" tabIndex="-1" style={{ display: "block" }}>
+        <div className="modal" style={{ display: "block" }}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Profile</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  aria-label="Close"
-                  onClick={handleCloseProfileModal}
-                ></button>
+                <button type="button" className="btn-close" onClick={handleCloseProfileModal}></button>
               </div>
-              <div className="modal-body d-flex justify-content-center">
-                <div
-                  className="card"
-                  style={{
-                    width: "18rem",
-                    textAlign: "center",
-                    margin: "auto",
-                    border: "2px solid blue",
-                  }}
-                >
-                  <img
-                    src={userProfile.profilePicture}
-                    className="card-img-top"
-                    alt="Profile"
-                  />
-                 <div className="card-body">
-  <h5 className="card-title" style={{ marginBottom: "0", fontSize: "1.2rem" }}>
-    {userProfile.name}
-  </h5>
-  <div className="card-text" style={{ textAlign: "left" }}>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Email:</strong> {userProfile.email}
-    </p>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Phone:</strong> {userProfile.phone}
-    </p>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Bio:</strong> {userProfile.bio}
-    </p>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Skills:</strong> {userProfile.skills}
-    </p>
-  </div>
-</div>
-
-                </div>
+              <div className="modal-body">
+                <img
+                  src={userProfile.profilePicture}
+                  alt="Profile"
+                  className="img-fluid rounded-circle"
+                />
+                <h3>{userProfile.name}</h3>
+                <p><strong>Email:</strong> {userProfile.email}</p>
+                <p><strong>Phone:</strong> {userProfile.phone}</p>
+                <p><strong>Bio:</strong> {userProfile.bio}</p>
+                <p><strong>Skills:</strong> {userProfile.skills}</p>
               </div>
-
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleCloseProfileModal}
-                >
+                <button type="button" className="btn btn-secondary" onClick={handleCloseProfileModal}>
                   Close
                 </button>
               </div>

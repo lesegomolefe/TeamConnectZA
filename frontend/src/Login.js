@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import axios from 'axios';
 
 const Login = () => {
     const navigate = useNavigate(); // Use the useNavigate hook to get the navigation function
@@ -7,19 +8,24 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here you can implement the actual login logic, such as sending a request to the server
-        // For now, let's just log the email and password
-        console.log('Email:', email);
-        console.log('Password:', password);
-        // Reset form fields
-        setEmail('');
-        setPassword('');
-        // Display a success message
-        setMsg('Login successful!');
-        // Navigate to the dashboard
-        navigate('/dashboard');
+        try {
+            const response = await axios.post('http://localhost:5000/api/login', {
+                email,
+                password
+            });
+            console.log(response.data);
+            setMsg('Login successful!');
+            // Reset form fields
+            setEmail('');
+            setPassword('');
+            // Navigate to the dashboard
+            navigate('/dashboard');
+        } catch (error) {
+            console.error(error);
+            setMsg('Login failed. Please check your credentials.');
+        }
     };
 
     return (
