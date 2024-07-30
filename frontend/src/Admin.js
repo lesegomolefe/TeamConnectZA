@@ -6,58 +6,98 @@ import axios from 'axios';
 function Admin() {
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [complaintsCount, setComplaintsCount] = useState(0);
   const [complaintsMessages, setComplaintsMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [groups, setGroups] = useState([]);
+  const [newGroupName, setNewGroupName] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  
+  const searchBySkills = (searchTerm) => {
+    const people = [
+      { name: "John Doe", skills: ["JavaScript", "React", "Node.js"] },
+      { name: "Jane Smith", skills: ["Python", "Django", "Machine Learning"] },
+      { name: "Bob Johnson", skills: ["Java", "Spring", "Hibernate"] },
+      { name: "Alice Williams", skills: ["C#", ".NET", "SQL Server"] },
+    ];
+  
+    return people.filter(person => 
+      person.skills.some(skill => 
+        skill.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  };
+ 
+  
+  
 
   useEffect(() => {
-    const fetchComplaintsCount = async () => {
+    const fetchComplaints = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
-        const response = await axios.get('/api/complaints/count'); // Endpoint for count
-        setComplaintsCount(response.data.count);
-      } catch (error) {
-        console.error('Failed to fetch complaints count', error);
-      }
-    };
-
-    const fetchComplaintsMessages = async () => {
-      try {
-        const response = await axios.get('/api/complaints/messages'); // Endpoint for messages
+        const response = await axios.get('http://localhost:5000/api/complaints');
         setComplaintsMessages(response.data);
+        setComplaintsCount(response.data.length);
       } catch (error) {
-        console.error('Failed to fetch complaints messages', error);
+        console.error('Failed to fetch complaints', error);
+        setError('Failed to fetch complaints. Please try again later.');
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchComplaintsCount();
-    fetchComplaintsMessages();
+    fetchComplaints();
   }, []);
+
+  
 
   const handleModal = () => {
     setShowModal(!showModal);
   };
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const results = searchBySkills(searchTerm);
+    setSearchResults(results);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted!');
-    setShowModal(false); // Close the modal after submitting the form
+    if (newGroupName.trim()) {
+      setGroups([...groups, newGroupName]);
+      setNewGroupName('');
+      setShowModal(false);
+    }
   };
 
   return (
     <div>
       <nav style={{ display: 'flex', justifyContent: 'space-between' }} className="navbar navbar-expand-lg bg-dark">
-        <div style={{ color: 'white' }} className="container-md">
+        <div style={{ color: 'white' ,display:'flex', alignItems :'center' }} className="container-md">
           <h1>TeamConnect</h1>
           <div>
+          <form onSubmit={handleSearch} className="input-group" style={{width: '300px', marginLeft: 'auto', marginRight: '10px'}}>
+            <input 
+              type="text" 
+              className="form-control" 
+              placeholder="Search by skills..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button className="btn btn-outline-primary" type="submit">Search</button>
+          </form>
             <div className="dropdown d-inline-block me-2">
               <button className="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">  
                 Zensar Interns Groups
               </button>
               <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {/* Your dropdown items here */}
+                {groups.map((group, index) => (
+                  <li key={index}><a className="dropdown-item" href="#">{group}</a></li>
+                ))}
               </ul>
             </div>
             
@@ -70,6 +110,16 @@ function Admin() {
           </div>
         </div>
       </nav>
+      {searchResults.length > 0 && (
+        <div style={{position: 'absolute', top: '60px', right: '20px', width: '300px', backgroundColor: 'white', border: '1px solid #ddd', borderRadius: '4px', padding: '10px', zIndex: 1000}}>
+          <h6>People with matching skills:</h6>
+          <ul style={{listStyleType: 'none', padding: 0}}>
+            {searchResults.map((person, index) => (
+              <li key={index}>{person.name} - {person.skills.join(', ')}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <br />
       <div style={{ marginLeft: '4%', marginRight: '4%' }} className="alert alert-warning alert-dismissible fade show" role="alert">
         <strong>Phumzile,</strong>
@@ -91,29 +141,27 @@ function Admin() {
               <div className="modal-dialog" role="document">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h5 className="modal-title">Add new member</h5>
+                    <h5 className="modal-title">Add new Group</h5>
                     <button type="button" className="btn-close" onClick={handleModal} aria-label="Close"></button>
                   </div>
                   <div className="modal-body">
                     <div className="alert alert-warning alert-dismissible fade show" role="alert">
-                      {message ? message : 'Input new member information'}
+                      {message ? message : 'Input new group name'}
                       <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
+                    
                     <div className="mb-3">
-                      <label htmlFor="id" className="form-label">ID number</label>
-                      <input required type="number" name="id" className="form-control" id="id" placeholder="" value={id} onChange={(e) => setId(e.target.value)} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="firstname" className="form-label">Firstname</label>
-                      <input required type="text" name="firstname" className="form-control" id="firstname" placeholder="" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="lastname" className="form-label">Lastname</label>
-                      <input required type="text" name="lastname" className="form-control" id="lastname" placeholder="" value={lastname} onChange={(e) => setLastname(e.target.value)} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="email" className="form-label">Email</label>
-                      <input type="email" name="email" className="form-control" id="email" placeholder="" value={email} onChange={(e) => setEmail(e.target.value)} />
+                      <label htmlFor="groupname" className="form-label">Group Name</label>
+                      <input 
+                        required 
+                        type="text" 
+                        name="groupname" 
+                        className="form-control" 
+                        id="groupname" 
+                        placeholder="Enter group name" 
+                        value={newGroupName} 
+                        onChange={(e) => setNewGroupName(e.target.value)} 
+                      />
                     </div>
                   </div>
                   <div className="modal-footer">
@@ -126,7 +174,7 @@ function Admin() {
           </div>
         }
 
-        <h1>Complaints</h1>
+        <h1>Messages</h1>
         <br />
         <div style={{ border: '1px solid blue', padding: '1%', borderRadius: '15px' }}>
           <div style={{ borderRadius: '8px' }} className="alert alert-primary alert-dismissible fade show" role="alert">
@@ -146,7 +194,7 @@ function Admin() {
                     Notice
                   </button>
                   <button className="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="true">
-                    Complaints <span className="badge text-bg-warning">{complaintsCount}</span>
+                    Messages <span className="badge text-bg-warning">{complaintsCount}</span>
                   </button>
                   <button className="nav-link" id="nav-private-tab" data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">
                     Private
@@ -181,11 +229,23 @@ function Admin() {
                 </div>
                 <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabIndex="0">
                   <br />
-                  <ul>
-                    {complaintsMessages.map((msg, index) => (
-                      <li key={index}>{msg.message}</li> // Adjust according to your message structure
-                    ))}
-                  </ul>
+                  {isLoading ? (
+                    <p>Loading complaints...</p>
+                  ) : error ? (
+                    <p>{error}</p>
+                  ) : complaintsMessages.length > 0 ? (
+                    <ul className="list-group">
+                      {complaintsMessages.map((complaint, index) => (
+                        <li key={index} className="list-group-item">
+                          <strong>Date:</strong> {new Date(complaint.date).toLocaleDateString()}<br />
+                          <strong>Message:</strong> {complaint.comp_message}<br />
+                          <strong>Seen:</strong> {complaint.seen ? 'Yes' : 'No'}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No complaints found.</p>
+                  )}
                 </div>
                 <div className="tab-pane fade" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab" tabIndex="0">
                   <br />
