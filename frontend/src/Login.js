@@ -7,6 +7,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
+    const [role, setRole] = useState('intern'); // Default role is set to 'intern'
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,7 +22,12 @@ const Login = () => {
             setEmail('');
             setPassword('');
             // Navigate to the dashboard
-            navigate('/dashboard');
+            // navigate('/dashboard');
+             if (role === 'intern') {
+                navigate('/dashboard');
+            } else if (role === 'manager') {
+                navigate('/admin');
+            }
         } catch (error) {
             console.error(error);
             setMsg('Login failed. Please check your credentials.');
@@ -44,6 +50,13 @@ const Login = () => {
                 <div className="mb-3">
                     <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
                     <input name="password" type="password" className="form-control" id="exampleInputPassword1" value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="roleSelect" className="form-label">Role</label>
+                    <select id="roleSelect" className="form-select" value={role} onChange={(e) => setRole(e.target.value)}>
+                        <option value="intern">Intern</option>
+                        <option value="manager">Manager</option>
+                    </select>
                 </div>
                 <button type="submit" className="btn btn-primary">Login</button>
             </form>

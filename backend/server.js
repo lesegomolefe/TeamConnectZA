@@ -20,11 +20,11 @@ const pool = new Pool({
 
 // Routes
 app.post('/api/register', async (req, res) => {
-  const { firstName, lastName, idNo, email, password } = req.body;
+  const { firstName, lastName, email, password,role } = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO users (first_name, last_name, id_no, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [firstName, lastName, idNo, email, password]
+      'INSERT INTO users (first_name, last_name, email, password, role) VALUES ($1, $2, $3, $4,$5) RETURNING *',
+      [firstName, lastName, email, password,role]
     );
     res.json(result.rows[0]);
   } catch (err) {

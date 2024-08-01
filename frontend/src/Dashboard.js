@@ -11,8 +11,8 @@ const Dashboard = () => {
   });
 
   const [session, setSession] = useState({
-    firstname: "Lesego",
-    lastname: "Molefe",
+    firstname: "Nhlalala",
+    lastname: "Mudanisi",
   });
 
   const [msg, setMsg] = useState("");
@@ -22,9 +22,9 @@ const Dashboard = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [activeTab, setActiveTab] = useState("complains");
   const [userProfile, setUserProfile] = useState({
-    name: "Lesego Molefe",
-    email: "lesego.molefe@example.com",
-    phone: "+27123456789",
+    name: "Nhlalala Mudanisi",
+    email: "nhlalala60@example.com",
+    phone: "0725753318",
     bio: "I am a passionate software developer with expertise in React and Node.js.",
     skills: "php, java, html, js",
     profilePicture: "icon.jpg",
