@@ -44,7 +44,7 @@ const Register = () => {
     return (
         <div className="login" style={{ backgroundColor: 'rgb(245, 246, 250)', marginLeft: '15%', marginRight: '15%', marginTop: '10%', width: '70%', border: '1px solid rgb(38, 0, 70)', borderRadius: '15px', padding: '15px', textAlign: 'center' }}>
             <h1>TeamConnect</h1>
-            <p>Hi newbie, Please register.</p>
+            <p>Hi newbies, Please register.</p>
          
             {msg && <p style={{ margin: 'auto', width: '50%', textAlign: 'center', backgroundColor: '#0d6efd', color: 'white', borderRadius: '25px' }}>{msg}</p>}
             <div className="progress" style={{ height: '1px' }}>
