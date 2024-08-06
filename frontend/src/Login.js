@@ -17,7 +17,7 @@ const Login = () => {
         // Simulate an asynchronous login process
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        console.log('Email:', email);
+        console.log('Emails:', email);
         console.log('Password:', password);
 
         setEmail('');
