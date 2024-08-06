@@ -1,31 +1,46 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [idNo, setIdNo] = useState('');
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState('intern');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [msg, setMsg] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here you can implement the actual registration logic, such as sending a request to the server
-        // For now, let's just log the form data
+        setIsLoading(true);
+        setMsg('');
+
+        // Simulate an asynchronous registration process
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
         console.log('First Name:', firstName);
         console.log('Last Name:', lastName);
         console.log('ID Number:', idNo);
         console.log('Email:', email);
         console.log('Password:', password);
-        // Reset form fields
+
         setFirstName('');
         setLastName('');
         setIdNo('');
         setEmail('');
         setPassword('');
-        // Display a success message
+        setConfirmPassword('');
         setMsg('Registration successful!');
+        setIsLoading(false);
+
+        if (role === 'intern') {
+            navigate('/dashboard');
+        } else if (role === 'manager') {
+            navigate('/admin');
+        }
     };
 
     return (
@@ -33,7 +48,7 @@ const Register = () => {
             <h1>TeamConnect</h1>
             <p>Hi newbie, Please register.</p>
          
-            <p style={{ margin: 'auto', width: '50%', textAlign: 'center', backgroundColor: '#0d6efd', color: 'white', borderRadius: '25px' }}>{msg}</p>
+            {msg && <p style={{ margin: 'auto', width: '50%', textAlign: 'center', backgroundColor: '#0d6efd', color: 'white', borderRadius: '25px' }}>{msg}</p>}
             <div className="progress" style={{ height: '1px' }}>
                 <div className="progress-bar" role="progressbar" aria-label="Example 1px high" style={{ width: '100%' }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
@@ -47,9 +62,7 @@ const Register = () => {
                     </div>
                 </div>
                 <br />
-                <div className="mb-3">
-                    <input type="number" maxLength="13" minLength="13" required name="id_no" className="form-control" placeholder="Identity number" aria-describedby="emailHelp" value={idNo} onChange={(e) => setIdNo(e.target.value)} />
-                </div>
+                
                 <div className="mb-3">
                     <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
                     <input name="email" type="email" className="form-control" placeholder="Your email address" id="exampleInputEmail1" aria-describedby="emailHelp" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -58,9 +71,29 @@ const Register = () => {
                     <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
                     <input name="password" required type="password" className="form-control" placeholder="Password" id="exampleInputPassword1" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
-                <button type="submit" className="btn btn-primary">Register</button>
+                <div className="mb-3">
+                    <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+                    <input name="confirmPassword" required type="password" className="form-control" placeholder="Confirm Password" id="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="roleSelect" className="form-label">Role</label>
+                    <select id="roleSelect" className="form-select" value={role} onChange={(e) => setRole(e.target.value)}>
+                        <option value="intern">Intern</option>
+                        <option value="manager">Manager</option>
+                    </select>
+                </div>
+                <button type="submit" className="btn btn-primary" disabled={isLoading}>
+                    {isLoading ? (
+                        <>
+                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span className="visually-hidden">Loading...</span>
+                        </>
+                    ) : (
+                        'Register'
+                    )}
+                </button>
             </form>
-            <div id="emailHelp" className="form-text">Been here? <Link to="/login">Login</Link></div>
+            <div id="emailHelp" className="form-text">Been here? <Link to="/">Login</Link></div>
         </div>
     );
 };

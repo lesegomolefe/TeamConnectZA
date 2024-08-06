@@ -1,476 +1,250 @@
-import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bulma/css/bulma.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { faCalendarAlt, faChartLine, faComments, faTasks, faUserCog, faUserGraduate, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
+import { Line, Pie } from 'react-chartjs-2';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const [notice, setNotice] = useState({
-    message: "Sample notification message",
-    date: new Date(),
-  });
+  const navigate = useNavigate();
 
-  const [session, setSession] = useState({
-    firstname: "Lesego",
-    lastname: "Molefe",
-  });
+  const activeGroups = [
+    { id: 1, name: "Web Development", members: 5 },
+    { id: 2, name: "Data Science", members: 4 },
+    { id: 3, name: "UI/UX Design", members: 3 },
+    { id: 4, name: "Mobile App", members: 6 },
+  ];
 
-  const [msg, setMsg] = useState("");
-  const [employees, setEmployees] = useState([
-    { id: 1, name: "Prince", surname: "Wits" },
-    { id: 2, name: "Letago", surname: "Tut" },
-  ]);
-
-  const [userComp, setUserComp] = useState([
-    {
-      comp_id: 1,
-      comp_about: "1 Prince Wits",
-      comp_message: "Message 1",
-      date: new Date(),
-      seen: 1,
-    },
-    {
-      comp_id: 2,
-      comp_about: "2 Letago TuT",
-      comp_message: "Message 2",
-      date: new Date(),
-      seen: 0,
-    },
-  ]);
-
-  const [compAboutUser, setCompAboutUser] = useState([
-    {
-      comp_from: "Prince TuT",
-      comp_message: "Message about you 1",
-      date: new Date(),
-    },
-  ]);
-
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
+  const performanceData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+      {
+        label: 'Performance Score',
+        data: [65, 59, 80, 81, 56, 55],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
+      },
+    ],
   };
 
-  const handleFileUpload = (e) => {
-    e.preventDefault();
-    console.log("Selected file:", selectedFile);
-  };
-
-  const [activeTab, setActiveTab] = useState("complains");
-
-  const [userProfile, setUserProfile] = useState({
-    name:  "Lesego Molefe",
-    email:  "lesego.molefe@example.com",
-    phone:  "+27123456789",
-    bio  :     "I am a passionate software developer with expertise in React and Node.js.",
-    skills: "php, java, html, js",
-    profilePicture: "icon.jpg",
-  });
-
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
-
-  const [showProfileModal, setShowProfileModal] = useState(false);
-
-  const handleProfileClick = () => {
-    setShowProfileModal(true);
-  };
-
-  const handleCloseProfileModal = () => {
-    setShowProfileModal(false);
+  const groupDistributionData = {
+    labels: activeGroups.map(group => group.name),
+    datasets: [
+      {
+        data: activeGroups.map(group => group.members),
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.8)',
+          'rgba(54, 162, 235, 0.8)',
+          'rgba(255, 206, 86, 0.8)',
+          'rgba(75, 192, 192, 0.8)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
   };
 
   return (
-    <div>
-      <nav
-        style={{ display: "space-between", position: "fixed", width: "100%" }}
-        className="navbar navbar-expand-lg bg-dark"
-      >
-        <div style={{ color: "white" }} className="container-md">
-          <h1>TeamConnect</h1>
-          <div>
-            <form onSubmit={handleFileUpload} encType="multipart/form-data">
-              <label
-                htmlFor="cv-upload"
-                className="btn btn-outline-primary mx-2"
-              >
-                Upload CV
-              </label>
-              <input
-                type="file"
-                id="cv-upload"
-                accept=".pdf,.doc,.docx"
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-              <button type="submit" className="btn btn-outline-primary mx-2">
-                Submit
-              </button>
-              <button type="button" className="btn btn-outline-primary">
-                <a
-                  style={{ textDecoration: "none", color: "blue" }}
-                  href="/logout"
-                >
-                  Logout
-                </a>
-              </button>
-            </form>
+    <>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <div className="container-fluid">
+          <a className="navbar-brand" href="#">Dashboard</a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <button className="btn btn-outline-primary" onClick={() => navigate('/admin')}>
+                  <FontAwesomeIcon icon={faUserCog} className="me-2" />
+                  Admin
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
       </nav>
-      <br />
-      <br />
-      <br />
-      <div
-        style={{ margin: "7px" }}
-        className="alert alert-primary alert-dismissible fade show"
-        role="alert"
-      >
-        <strong>NOTIFICATION</strong>
-        <br />
-        <br />
-        {notice.message}
-        <p
-          style={{
-            margin: "10px",
-            textAlign: "right",
-            fontSize: "12px",
-            backgroundColor: "#0d6efd",
-            borderRadius: "7px",
-            padding: "7px",
-            fontWeight: "700",
-            color: "white",
-          }}
-        >
-          {notice.date.toLocaleDateString("en-US", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-          })}
-        </p>
-        <button
-          type="button"
-          className="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
-      <br />
-      <div
-        style={{ marginLeft: "4%", marginRight: "4%" }}
-        className="alert alert-warning alert-dismissible fade show"
-        role="alert"
-      >
-        <strong>{session.firstname},</strong>
-        {msg || "Hope you having a great day 😊😊."}
-        <button
-          type="button"
-          className="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
-      <br />
-      <div style={{ paddingLeft: "5%", paddingRight: "5%" }}>
-        <h1 style={{ textAlign: "right" }}>
-          {session.firstname} {session.lastname}{" "}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            fill="currentColor"
-            className="bi bi-person-circle"
-            viewBox="0 0 16 16"
-            onClick={handleProfileClick}
-          >
-            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-            <path
-              fillRule="evenodd"
-              d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
-            />
-          </svg>
-        </h1>
-        <div className="progress" style={{ height: "5px" }}>
-          <div
-            className="progress-bar"
-            role="progressbar"
-            aria-label="Example 1px high"
-            style={{ width: "100%" }}
-            aria-valuenow="25"
-            aria-valuemin="0"
-            aria-valuemax="100"
-          ></div>
-        </div>
+      <div className="container-fluid">
+        <h1 className="mt-4 mb-4">Dashboard</h1>
 
-        <h1>Write a new complain</h1>
-        <br />
-        <div
-          style={{
-            border: "1px solid blue",
-            padding: "2%",
-            borderRadius: "15px",
-          }}
-        >
-          <form action="add_complain" method="post">
-            <div className="container-sm">
-              <select
-                required
-                name="comp_about"
-                className="form-select"
-                aria-label="Default select example"
-              >
-                <option selected>
-                  Please choose a member to complain about
-                </option>
-                {employees.map((emp) => (
-                  <option
-                    key={emp.id}
-                    value={`${emp.id} ${emp.name} ${emp.surname}`}
-                  >
-                    {emp.name} {emp.surname}
-                  </option>
-                ))}
-              </select>
-              <br />
-
-              <div className="form-floating mb-3">
-                <input
-                  required
-                  name="date"
-                  type="date"
-                  className="form-control"
-                  id="floatingInput"
-                  placeholder="when did it happen?"
-                />
-                <label htmlFor="floatingInput">Incident date</label>
-              </div>
-              <div className="row g-2">
-                <div className="col-sm-12">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="exampleFormControlTextarea1"
-                      className="form-label"
-                    >
-                      What happened?
-                    </label>
-                    <textarea
-                      required
-                      name="comp_message"
-                      className="form-control"
-                      id="exampleFormControlTextarea1"
-                      rows="3"
-                    ></textarea>
+        <div className="row">
+          <div className="col-xl-3 col-md-6 mb-4">
+            <div className="card border-left-primary shadow h-100 py-2">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                      Total Interns
+                    </div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">25</div>
+                  </div>
+                  <div className="col-auto">
+                    <FontAwesomeIcon icon={faUserGraduate} size="2x" className="text-gray-300" />
                   </div>
                 </div>
               </div>
-              <div style={{ textAlign: "right" }} className="col-sm-12">
-                <button type="submit" className="btn btn-outline-primary">
-                  Post
-                </button>
-              </div>
             </div>
-          </form>
-        </div>
-        <br />
-        <div className="row g-0 text-center">
-          <nav>
-            <div className="nav nav-tabs" id="nav-tab" role="tablist">
-              <button
-                className={`nav-link ${
-                  activeTab === "complains" ? "active" : ""
-                }`}
-                id="nav-home-tab"
-                onClick={() => handleTabChange("complains")}
-                type="button"
-                role="tab"
-                aria-controls="nav-home"
-                aria-selected={activeTab === "complains"}
-              >
-                Complains
-              </button>
-              <button
-                className={`nav-link ${
-                  activeTab === "about-you" ? "active" : ""
-                }`}
-                id="nav-profile-tab"
-                onClick={() => handleTabChange("about-you")}
-                type="button"
-                role="tab"
-                aria-controls="nav-profile"
-                aria-selected={activeTab === "about-you"}
-              >
-                About you
-              </button>
-            </div>
-          </nav>
-          <div className="tab-content" id="nav-tabContent">
-            {activeTab === "complains" && (
-              <div
-                className="tab-pane fade show active"
-                id="nav-home"
-                role="tabpanel"
-                aria-labelledby="nav-home-tab"
-              >
-                <div className="container-fluid">
-                  {userComp.length === 0 ? (
-                    <h3>No complaints posted</h3>
-                  ) : (
-                    userComp.map((comp) => (
-                      <div
-                        key={comp.comp_id}
-                        className={`alert ${
-                          comp.seen === 1 ? "alert-success" : "alert-warning"
-                        } alert-dismissible fade show`}
-                        role="alert"
-                      >
-                        <strong>{comp.comp_about}</strong> {comp.comp_message}
-                        <hr />
-                        <p
-                          style={{
-                            textAlign: "right",
-                            fontSize: "12px",
-                            backgroundColor: "#0d6efd",
-                            borderRadius: "7px",
-                            padding: "7px",
-                            fontWeight: "700",
-                            color: "white",
-                          }}
-                        >
-                          {new Date(comp.date).toLocaleDateString("en-US", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </p>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          data-bs-dismiss="alert"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                    ))
-                  )}
+          </div>
+
+          <div className="col-xl-3 col-md-6 mb-4">
+            <div className="card border-left-success shadow h-100 py-2">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+                      Active Groups
+                    </div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">5</div>
+                  </div>
+                  <div className="col-auto">
+                    <FontAwesomeIcon icon={faUsers} size="2x" className="text-gray-300" />
+                  </div>
                 </div>
               </div>
-            )}
-            {activeTab === "about-you" && (
-              <div
-                className="tab-pane fade show active"
-                id="nav-profile"
-                role="tabpanel"
-                aria-labelledby="nav-profile-tab"
-              >
-                <div className="container-fluid">
-                  {compAboutUser.length === 0 ? (
-                    <h3>No complaints about you</h3>
-                  ) : (
-                    compAboutUser.map((comp, index) => (
-                      <div
-                        key={index}
-                        className="alert alert-warning alert-dismissible fade show"
-                        role="alert"
-                      >
-                        <strong>{comp.comp_from}</strong> {comp.comp_message}
-                        <hr />
-                        <p
-                          style={{
-                            textAlign: "right",
-                            fontSize: "12px",
-                            backgroundColor: "#0d6efd",
-                            borderRadius: "7px",
-                            padding: "7px",
-                            fontWeight: "700",
-                            color: "white",
-                          }}
-                        >
-                          {new Date(comp.date).toLocaleDateString("en-US", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </p>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          data-bs-dismiss="alert"
-                          aria-label="Close"
-                        ></button>
+            </div>
+          </div>
+
+          <div className="col-xl-3 col-md-6 mb-4">
+            <div className="card border-left-info shadow h-100 py-2">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
+                      Average Performance
+                    </div>
+                    <div className="row no-gutters align-items-center">
+                      <div className="col-auto">
+                        <div className="h5 mb-0 mr-3 font-weight-bold text-gray-800">78%</div>
                       </div>
-                    ))
-                  )}
+                      <div className="col">
+                        <div className="progress progress-sm mr-2">
+                          <div
+                            className="progress-bar bg-info"
+                            role="progressbar"
+                            style={{ width: "78%" }}
+                            aria-valuenow="78"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <FontAwesomeIcon icon={faChartLine} size="2x" className="text-gray-300" />
+                  </div>
                 </div>
               </div>
-            )}
+            </div>
+          </div>
+
+          <div className="col-xl-3 col-md-6 mb-4">
+            <div className="card border-left-warning shadow h-100 py-2">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                      Pending Tasks
+                    </div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                  </div>
+                  <div className="col-auto">
+                    <FontAwesomeIcon icon={faTasks} size="2x" className="text-gray-300" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      {showProfileModal && (
-        <div className="modal show" tabIndex="-1" style={{ display: "block" }}>
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Profile</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  aria-label="Close"
-                  onClick={handleCloseProfileModal}
-                ></button>
-              </div>
-              <div className="modal-body d-flex justify-content-center">
-                <div
-                  className="card"
-                  style={{
-                    width: "18rem",
-                    textAlign: "center",
-                    margin: "auto",
-                    border: "2px solid blue",
-                  }}
-                >
-                  <img
-                    src={userProfile.profilePicture}
-                    className="card-img-top"
-                    alt="Profile"
-                  />
-                 <div className="card-body">
-  <h5 className="card-title" style={{ marginBottom: "0", fontSize: "1.2rem" }}>
-    {userProfile.name}
-  </h5>
-  <div className="card-text" style={{ textAlign: "left" }}>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Email:</strong> {userProfile.email}
-    </p>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Phone:</strong> {userProfile.phone}
-    </p>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Bio:</strong> {userProfile.bio}
-    </p>
-    <p style={{ margin: "5px 0", fontSize: "1rem" }}>
-      <strong>Skills:</strong> {userProfile.skills}
-    </p>
-  </div>
-</div>
 
+        <div className="row">
+          <div className="col-xl-8 col-lg-7">
+            <div className="card shadow mb-4">
+              <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 className="m-0 font-weight-bold text-primary">Performance Overview</h6>
+              </div>
+              <div className="card-body">
+                <div className="chart-area">
+                  <Line data={performanceData} />
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleCloseProfileModal}
-                >
-                  Close
-                </button>
+          <div className="col-xl-4 col-lg-5">
+            <div className="card shadow mb-4">
+              <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 className="m-0 font-weight-bold text-primary">Group Distribution</h6>
+              </div>
+              <div className="card-body">
+                <div className="chart-pie pt-4 pb-2">
+                  <Pie data={groupDistributionData} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-lg-6 mb-4">
+            <div className="card shadow mb-4">
+              <div className="card-header py-3">
+                <h6 className="m-0 font-weight-bold text-primary">Upcoming Events</h6>
+              </div>
+              <div className="card-body">
+                <div className="mb-2">
+                  <FontAwesomeIcon icon={faCalendarAlt} className="mr-2 text-info" />
+                  Team Building Workshop - August 15, 2024
+                </div>
+                <div className="mb-2">
+                  <FontAwesomeIcon icon={faCalendarAlt} className="mr-2 text-info" />
+                  Quarterly Performance Review - September 1, 2024
+                </div>
+                <div>
+                  <FontAwesomeIcon icon={faCalendarAlt} className="mr-2 text-info" />
+                  Tech Talk Series - September 10, 2024
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-lg-6 mb-4">
+            <div className="card shadow mb-4">
+              <div className="card-header py-3">
+                <h6 className="m-0 font-weight-bold text-primary">Recent Announcements</h6>
+              </div>
+              <div className="card-body">
+                <div className="mb-2">
+                  <FontAwesomeIcon icon={faComments} className="mr-2 text-warning" />
+                  New project kickoff meeting scheduled for next week.
+                </div>
+                <div className="mb-2">
+                  <FontAwesomeIcon icon={faComments} className="mr-2 text-warning" />
+                  Congratulations to Team Alpha for completing their project ahead of schedule!
+                </div>
+                <div>
+                  <FontAwesomeIcon icon={faComments} className="mr-2 text-warning" />
+                  Reminder: Submit your weekly reports by Friday EOD.
+                </div>
               </div>
             </div>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 
