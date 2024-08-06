@@ -49,6 +49,64 @@ const Dashboard = () => {
     ],
   };
 
+//   useEffect(() => {
+//     const fetchEmployees = async () => {
+//       try {
+//         const response = await axios.get("http://localhost:5000/api/users");
+//         setEmployees(response.data);
+//       } catch (error) {
+//         console.error("Error fetching employees:", error);
+//       }
+//     };
+
+//     const fetchComplaints = async () => {
+//       try {
+//         const response = await axios.get("http://localhost:5000/api/complaints");
+//         setUserComp(response.data);
+//       } catch (error) {
+//         console.error("Error fetching complaints:", error);
+//       }
+//     };
+
+//     fetchEmployees();
+//     fetchComplaints();
+//   }, []);
+
+//   const handleFileUpload = async (e) => {
+//     e.preventDefault();
+//     const formData = new FormData();
+//     formData.append("file", selectedFile);
+
+//     try {
+//       const response = await axios.post("http://localhost:5000/api/upload", formData, {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       });
+//       console.log(response.data);
+//     } catch (error) {
+//       console.error("Error uploading file:", error);
+//     }
+//   };
+
+//   const handleSubmitComplaint = async (e) => {
+//     e.preventDefault();
+//     const formData = new FormData(e.target);
+//     const complaint = {
+//       comp_about: formData.get("comp_about"),
+//       comp_message: formData.get("comp_message"),
+//       date: formData.get("date"),
+//       seen: 0,
+//     };
+
+//     try {
+//       const response = await axios.post("http://localhost:5000/api/complaints", complaint);
+//       setUserComp([...userComp, response.data]);
+//     } catch (error) {
+//       console.error("Error submitting complaint:", error);
+//     }
+//   };
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">

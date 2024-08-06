@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 const Register = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [idNo, setIdNo] = useState('');
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('intern');
     const [password, setPassword] = useState('');
@@ -23,7 +22,6 @@ const Register = () => {
 
         console.log('First Name:', firstName);
         console.log('Last Name:', lastName);
-        console.log('ID Number:', idNo);
         console.log('Email:', email);
         console.log('Password:', password);
 
