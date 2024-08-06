@@ -27,18 +27,13 @@ const Register = () => {
 
         setFirstName('');
         setLastName('');
-        setIdNo('');
         setEmail('');
         setPassword('');
         setConfirmPassword('');
         setMsg('Registration successful!');
         setIsLoading(false);
 
-        if (role === 'intern') {
-            navigate('/dashboard');
-        } else if (role === 'manager') {
-            navigate('/admin');
-        }
+        
     };
 
     return (
